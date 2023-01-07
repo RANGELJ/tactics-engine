@@ -14,6 +14,7 @@ import {
 import vertexShaderCreate from '@/shared/vertexShaderCreate'
 import fragmentShaderCreate from '@/shared/fragmentShaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
+import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
 
 const start = () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
@@ -79,7 +80,7 @@ const start = () => {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
     const positions = [
-        0, 0,
+        -1, 0,
         0, 0.5,
         0.7, 0
     ]
@@ -110,9 +111,10 @@ const start = () => {
         offset
     )
 
+    resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
 
-    gl.clearColor(0, 0, 0, 0)
+    gl.clearColor(1, 1, 1, 0)
     gl.clear(gl.COLOR_BUFFER_BIT)
 
     gl.useProgram(program)
