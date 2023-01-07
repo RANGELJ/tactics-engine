@@ -8,16 +8,32 @@
 </template>
 
 <script lang="ts" setup>
+import {
+    VertexShaderStatementTypes
+} from '@/types'
+import vertexShaderCreateSource from '@/shared/vertexShaderCreateSource'
+
 const start = () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
-    const context = canvas.getContext('2d')
+    const context = canvas.getContext('webgl2')
 
     if (!context) {
         return
     }
-
-    context.fillStyle = 'black'
-    context.fillRect(0, 0, canvas.width, canvas.height)
+    console.clear()
+    console.log(vertexShaderCreateSource({
+        inputs: [{
+            name: 'a_position',
+            type: 'vec4'
+        }],
+        main: [
+            {
+                type: VertexShaderStatementTypes.ASSIGNATION,
+                from: 'a_position',
+                to: 'gl_Position'
+            }
+        ]
+    }))
 }
 </script>
 
