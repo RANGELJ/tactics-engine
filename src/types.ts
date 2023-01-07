@@ -1,21 +1,52 @@
+type ShaderTypes = 'vec4'
+
 type VertexShaderInput = {
-    type: 'vec4';
+    type: ShaderTypes;
     name: string;
 }
 
-export enum VertexShaderStatementTypes {
-    ASSIGNATION
+export enum ShaderNodeTypes {
+    VARIABLE_NAME,
+    ASSIGNATION,
+    VEC4_RGB_COLOR_CREATION,
 }
 
-type VertexShaderStatementAssignation = {
-    type: VertexShaderStatementTypes.ASSIGNATION;
+type ShaderNodeVariableName = {
+    type: ShaderNodeTypes.VARIABLE_NAME;
+    name: string;
+}
+
+type ShaderNodeVec4Creation = {
+    type: ShaderNodeTypes.VEC4_RGB_COLOR_CREATION;
+    red: number;
+    green: number;
+    blue: number;
+    alpha: number;
+}
+
+type ShaderExpression = ShaderNodeVariableName | ShaderNodeVec4Creation
+
+type ShaderNodeAssignation = {
+    type: ShaderNodeTypes.ASSIGNATION;
     to: string;
-    from: string;
+    from: ShaderExpression;
 }
 
-type VertexShaderStatement = VertexShaderStatementAssignation
+export type ShaderNode = ShaderNodeAssignation
+    | ShaderExpression
 
 export type VertexShader = {
     inputs: VertexShaderInput[];
-    main: VertexShaderStatement[];
+    main: ShaderNode[];
+}
+
+type FragmentShaderOutput = {
+    type: ShaderTypes;
+    name: string;
+}
+
+export type FragmentShader = {
+    precision: 'highp';
+    outputs: FragmentShaderOutput[];
+    main: ShaderNode[];
 }
