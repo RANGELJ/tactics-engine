@@ -1,5 +1,6 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
+import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
 
 const setRectangle = (gl: WebGL2RenderingContext, x: number, y: number, width: number, height: number) => {
     const x1 = x
@@ -22,6 +23,9 @@ const randomInt = (range: number) => {
 }
 
 const glExampleRenderTriangles = async (gl: WebGL2RenderingContext) => {
+    resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
