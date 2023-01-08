@@ -96,7 +96,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
-    const translation = [30, 30]
+    const translation = [0, 0]
     let angleInDegrees = 0
 
     const useProgram = () => {
