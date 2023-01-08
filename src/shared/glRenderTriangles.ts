@@ -1,8 +1,7 @@
 import {
     ShaderNodeTypes
 } from '@/types'
-import vertexShaderCreate from '@/shared/vertexShaderCreate'
-import fragmentShaderCreate from '@/shared/fragmentShaderCreate'
+import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 
 type Args = {
@@ -10,51 +9,21 @@ type Args = {
     positions: number[];
 }
 
-const glRenderTriangles = ({
+const glRenderTriangles = async ({
     gl,
     positions
 }: Args) => {
-    const vertexShader = vertexShaderCreate({
+    const vertexShader = await shaderCreate({
         gl,
-        vertexShader: {
-            inputs: [{
-                name: 'a_position',
-                type: 'vec4'
-            }],
-            main: [
-                {
-                    type: ShaderNodeTypes.ASSIGNATION,
-                    from: {
-                        type: ShaderNodeTypes.VARIABLE_NAME,
-                        name: 'a_position'
-                    },
-                    to: 'gl_Position'
-                }
-            ]
-        }
+        type: 'vert',
+        shaderName: 'directVertices'
     })
-    const fragmentShader = fragmentShaderCreate({
+    const fragmentShader = await shaderCreate({
         gl,
-        fragmentShader: {
-            precision: 'highp',
-            outputs: [
-                { type: 'vec4', name: 'outColor' }
-            ],
-            main: [
-                {
-                    type: ShaderNodeTypes.ASSIGNATION,
-                    from: {
-                        type: ShaderNodeTypes.VEC4_RGB_COLOR_CREATION,
-                        red: 1,
-                        green: 0,
-                        blue: 0.5,
-                        alpha: 0
-                    },
-                    to: 'outColor'
-                }
-            ]
-        }
+        type: 'frag',
+        shaderName: 'allPurpleVertices'
     })
+
     const program = glCreateProgram({
         gl,
         vertexShader,
@@ -79,7 +48,6 @@ const glRenderTriangles = ({
     }
 
     gl.bindVertexArray(vao)
-
     gl.enableVertexAttribArray(positionAttributeLocation)
 
     const size = 2

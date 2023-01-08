@@ -1,4 +1,4 @@
-type ShaderTypes = 'vec4'
+type ShaderTypes = 'vec4' | 'vec2'
 
 type VertexShaderInput = {
     type: ShaderTypes;

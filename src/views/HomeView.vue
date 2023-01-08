@@ -10,8 +10,9 @@
 <script lang="ts" setup>
 import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
 import glRenderTriangles from '@/shared/glRenderTriangles'
+import shaderLoadSource from '@/shared/shaderLoadSource'
 
-const start = () => {
+const start = async () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
     const gl = canvas.getContext('webgl2')
 
@@ -20,12 +21,14 @@ const start = () => {
     }
     console.clear()
 
+    await shaderLoadSource('directShader', 'vert')
+
     resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     glRenderTriangles({
         gl,
         positions: [
-            0, 0,
+            -1, 1,
             0, 0.5,
             0.7, 0
         ]
