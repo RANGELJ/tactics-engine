@@ -1,11 +1,15 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
+import matrix2DTranslationBuild from '@/shared/matrix2DTranslationBuild'
+import matrix2DRotationBuildFromRadians from '@/shared/matrix2DRotationBuildFromRadians'
+import matrix2DScaleBuild from '@/shared/matrix2DScaleBuild'
+import matrix2DMultiply from './matrix2DMultiply'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
-        shaderName: 'rotate2DSimpleVertices'
+        shaderName: 'example2DTransforms'
     })
     const fragmentShader = await shaderCreate({
         gl,
@@ -23,8 +27,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const locations = {
         uniforms: {
             resolution: gl.getUniformLocation(program, 'u_resolution'),
-            translation: gl.getUniformLocation(program, 'u_translation'),
-            rotation: gl.getUniformLocation(program, 'u_rotation'),
+            matrix: gl.getUniformLocation(program, 'u_matrix'),
             color: gl.getUniformLocation(program, 'u_color')
         },
         attributes: {
@@ -100,9 +103,20 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const useProgram = () => {
         gl.useProgram(program)
         gl.uniform2f(locations.uniforms.resolution, gl.canvas.width, gl.canvas.height)
-        gl.uniform2fv(locations.uniforms.translation, translation)
+
         const angleInRadians = angleInDegrees * Math.PI / 180
-        gl.uniform2fv(locations.uniforms.rotation, [Math.sin(angleInRadians), Math.cos(angleInRadians)])
+
+        const translationMatrix = matrix2DTranslationBuild(translation[0], translation[1])
+        const rotationMatrix = matrix2DRotationBuildFromRadians(angleInRadians)
+        const scaleMatrix = matrix2DScaleBuild(1, 1)
+
+        const matrix = matrix2DMultiply(
+            matrix2DMultiply(translationMatrix, rotationMatrix),
+            scaleMatrix
+        )
+
+        gl.uniformMatrix3fv(locations.uniforms.matrix, false, matrix)
+
         gl.uniform4f(locations.uniforms.color, Math.random(), Math.random(), Math.random(), 1)
         gl.bindVertexArray(vao)
     }

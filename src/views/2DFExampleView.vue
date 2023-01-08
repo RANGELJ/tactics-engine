@@ -2,7 +2,7 @@
     <div class="mainFrame">
         <canvas id="mainCanvas" />
         <div class="toolsPanel">
-            <button @click="printUseProgram">Print use program</button>
+            <button @click="printUseProgram">Rotate</button>
         </div>
     </div>
 </template>
