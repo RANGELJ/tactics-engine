@@ -1,10 +1,9 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
-import matrix2DTranslationBuild from '@/shared/matrix2DTranslationBuild'
-import matrix2DRotationBuildFromRadians from '@/shared/matrix2DRotationBuildFromRadians'
-import matrix2DScaleBuild from '@/shared/matrix2DScaleBuild'
-import matrix2DMultiply from '@/shared/matrix2DMultiply'
 import matrix2DGetProjection from '@/shared/matrix2DGetProjection'
+import matrix2DTranslate from '@/shared/matrix2DTranslate'
+import matrix2DRotateInRadians from '@/shared/matrix2DRotateInRadians'
+import matrix2DScale from '@/shared/matrix2DScale'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -27,7 +26,6 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     // This does not goes on render loop
     const locations = {
         uniforms: {
-            resolution: gl.getUniformLocation(program, 'u_resolution'),
             matrix: gl.getUniformLocation(program, 'u_matrix'),
             color: gl.getUniformLocation(program, 'u_color')
         },
@@ -98,23 +96,19 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
-    const translation = [0, 0]
+    const translation = [30, 30]
     let angleInDegrees = 0
 
     const useProgram = () => {
         gl.useProgram(program)
-        gl.uniform2f(locations.uniforms.resolution, gl.canvas.width, gl.canvas.height)
 
         const angleInRadians = angleInDegrees * Math.PI / 180
 
         const projectionMatrix = matrix2DGetProjection(gl.canvas.width, gl.canvas.height)
-        const translationMatrix = matrix2DTranslationBuild(translation[0], translation[1])
-        const rotationMatrix = matrix2DRotationBuildFromRadians(angleInRadians)
-        const scaleMatrix = matrix2DScaleBuild(1, 1)
 
-        let matrix = matrix2DMultiply(projectionMatrix, translationMatrix)
-        matrix = matrix2DMultiply(matrix, rotationMatrix)
-        matrix = matrix2DMultiply(matrix, scaleMatrix)
+        let matrix = matrix2DTranslate(projectionMatrix, translation[0], translation[1])
+        matrix = matrix2DRotateInRadians(matrix, angleInRadians)
+        matrix = matrix2DScale(matrix, 1, 1)
 
         gl.uniformMatrix3fv(locations.uniforms.matrix, false, matrix)
 
