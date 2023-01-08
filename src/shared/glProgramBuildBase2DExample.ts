@@ -96,19 +96,21 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
-    const translation = [0, 0]
-    let angleInDegrees = 0
+    const translation = [150, 100]
+    let angleInDegrees = 33
 
     const useProgram = () => {
         gl.useProgram(program)
 
         const angleInRadians = angleInDegrees * Math.PI / 180
 
-        const projectionMatrix = matrix2DGetProjection(gl.canvas.width, gl.canvas.height)
+        const canvas = gl.canvas as HTMLCanvasElement
+
+        const projectionMatrix = matrix2DGetProjection(canvas.clientWidth, canvas.clientHeight)
 
         let matrix = matrix2DTranslate(projectionMatrix, translation[0], translation[1])
         matrix = matrix2DRotateInRadians(matrix, angleInRadians)
-        matrix = matrix2DScale(matrix, 1, 1)
+        matrix = matrix2DScale(matrix, 2, 1.5)
 
         gl.uniformMatrix3fv(locations.uniforms.matrix, false, matrix)
 
