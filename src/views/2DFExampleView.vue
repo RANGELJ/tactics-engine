@@ -42,7 +42,7 @@ const printUseProgram = () => {
     if (!sceneProgram) {
         return
     }
-    sceneProgram.translationSet(10, 10)
+    sceneProgram.setRotationDegrees(10)
     drawScene()
 }
 </script>

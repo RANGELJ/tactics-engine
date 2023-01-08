@@ -95,12 +95,12 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     )
 
     const translation = [0, 0]
+    let angleInDegrees = 0
 
     const useProgram = () => {
         gl.useProgram(program)
         gl.uniform2f(locations.uniforms.resolution, gl.canvas.width, gl.canvas.height)
         gl.uniform2fv(locations.uniforms.translation, translation)
-        const angleInDegrees = 20
         const angleInRadians = angleInDegrees * Math.PI / 180
         gl.uniform2fv(locations.uniforms.rotation, [Math.sin(angleInRadians), Math.cos(angleInRadians)])
         gl.uniform4f(locations.uniforms.color, Math.random(), Math.random(), Math.random(), 1)
@@ -112,6 +112,9 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         translationSet: (x: number, y: number) => {
             translation[0] = x
             translation[1] = y
+        },
+        setRotationDegrees: (degrees: number) => {
+            angleInDegrees = degrees
         }
     }
 }
