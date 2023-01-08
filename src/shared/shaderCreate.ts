@@ -28,11 +28,12 @@ const shaderCreate = async ({
     const success: unknown = gl.getShaderParameter(shader, gl.COMPILE_STATUS)
 
     if (success !== true) {
-        gl.deleteShader(shader)
-        throw new Error(`Fragment shader compilation error
+        const errorMessage = `Fragment shader compilation error
         ${gl.getShaderInfoLog(shader)}
         source: ${shaderSource}
-    `)
+        `
+        gl.deleteShader(shader)
+        throw new Error(errorMessage)
     }
 
     return shader

@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts" setup>
-import glExampleRenderTriangles from '@/shared/glExampleRenderTriangles'
+import glExampleSimple2DTranslation from '@/shared/glExampleSimple2DTranslation'
 
 const start = async () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
@@ -19,7 +19,7 @@ const start = async () => {
     }
     console.clear()
 
-    glExampleRenderTriangles(gl)
+    glExampleSimple2DTranslation(gl)
 }
 </script>
 
