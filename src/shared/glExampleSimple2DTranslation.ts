@@ -29,7 +29,7 @@ const glExampleSimple2DTranslation = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
-        shaderName: 'translate2DVertices'
+        shaderName: 'rotate2DSimpleVertices'
     })
     const fragmentShader = await shaderCreate({
         gl,
@@ -46,6 +46,7 @@ const glExampleSimple2DTranslation = async (gl: WebGL2RenderingContext) => {
     // This does not goes on render loop
     const uniformResolutionLocation = gl.getUniformLocation(program, 'u_resolution')
     const uniformTranslationLocation = gl.getUniformLocation(program, 'u_translation')
+    const uniformRotationLocation = gl.getUniformLocation(program, 'u_rotation')
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position')
     const colorLocation = gl.getUniformLocation(program, 'u_color')
 
@@ -82,28 +83,52 @@ const glExampleSimple2DTranslation = async (gl: WebGL2RenderingContext) => {
     )
 
     gl.clearColor(1, 1, 1, 0)
-    gl.clear(gl.COLOR_BUFFER_BIT)
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
 
     gl.useProgram(program)
     gl.uniform2f(uniformResolutionLocation, gl.canvas.width, gl.canvas.height)
-    gl.uniform2fv(uniformTranslationLocation, new Float32Array([200, 0]))
+    gl.uniform2fv(uniformTranslationLocation, [50, 50])
+    const angleInDegrees = 20
+    const angleInRadians = angleInDegrees * Math.PI / 180
+    gl.uniform2fv(uniformRotationLocation, [Math.sin(angleInRadians), Math.cos(angleInRadians)])
     gl.bindVertexArray(vao)
 
-    for (let i = 0; i < 50; ++i) {
-        setRectangle(
-            gl,
-            randomInt(300),
-            randomInt(300),
-            randomInt(300),
-            randomInt(300)
-        )
-        gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1)
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Float32Array([
+            // left column
+            0, 0,
+            30, 0,
+            0, 150,
+            0, 150,
+            30, 0,
+            30, 150,
 
-        const primitiveType = gl.TRIANGLES
-        const offset2 = 0
-        const vertexCount = 6
-        gl.drawArrays(primitiveType, offset2, vertexCount)
-    }
+            // top rung
+            30, 0,
+            100, 0,
+            30, 30,
+            30, 30,
+            100, 0,
+            100, 30,
+
+            // middle rung
+            30, 60,
+            67, 60,
+            30, 90,
+            30, 90,
+            67, 60,
+            67, 90
+        ]),
+        gl.STATIC_DRAW
+    )
+
+    gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1)
+
+    const primitiveType = gl.TRIANGLES
+    const offset2 = 0
+    const vertexCount = 18
+    gl.drawArrays(primitiveType, offset2, vertexCount)
 }
 
 export default glExampleSimple2DTranslation
