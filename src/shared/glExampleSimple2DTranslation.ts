@@ -2,26 +2,6 @@ import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
 
-const setRectangle = (gl: WebGL2RenderingContext, x: number, y: number, width: number, height: number) => {
-    const x1 = x
-    const x2 = x + width
-    const y1 = y
-    const y2 = y + height
-
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        x1, y1,
-        x2, y1,
-        x1, y2,
-        x1, y2,
-        x2, y1,
-        x2, y2
-    ]), gl.STATIC_DRAW)
-}
-
-const randomInt = (range: number) => {
-    return Math.floor(Math.random() * range)
-}
-
 const glExampleSimple2DTranslation = async (gl: WebGL2RenderingContext) => {
     resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
