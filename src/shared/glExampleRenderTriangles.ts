@@ -21,13 +21,7 @@ const randomInt = (range: number) => {
     return Math.floor(Math.random() * range)
 }
 
-type Args = {
-    gl: WebGL2RenderingContext;
-}
-
-const glRenderTriangles = async ({
-    gl
-}: Args) => {
+const glExampleRenderTriangles = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
@@ -106,4 +100,4 @@ const glRenderTriangles = async ({
     }
 }
 
-export default glRenderTriangles
+export default glExampleRenderTriangles

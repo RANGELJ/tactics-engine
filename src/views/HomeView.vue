@@ -9,7 +9,7 @@
 
 <script lang="ts" setup>
 import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
-import glRenderTriangles from '@/shared/glRenderTriangles'
+import glExampleRenderTriangles from '@/shared/glExampleRenderTriangles'
 import shaderLoadSource from '@/shared/shaderLoadSource'
 
 const start = async () => {
@@ -25,9 +25,7 @@ const start = async () => {
 
     resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
-    glRenderTriangles({
-        gl
-    })
+    glExampleRenderTriangles(gl)
 }
 </script>
 
