@@ -7,19 +7,24 @@
 </template>
 
 <script lang="ts" setup>
-import glExampleSimple2DTranslation from '@/shared/glExampleSimple2DTranslation'
+import gl2DFExampleDrawScene from '@/shared/gl2DFExampleDrawScene'
+import glProgramBuildBase2DExample from '@/shared/glProgramBuildBase2DExample'
 import { onMounted } from 'vue'
 
-onMounted(() => {
+onMounted(async () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
     const gl = canvas.getContext('webgl2')
 
     if (!gl) {
         return
     }
-    console.clear()
 
-    glExampleSimple2DTranslation(gl)
+    const useProgram = await glProgramBuildBase2DExample(gl)
+
+    gl2DFExampleDrawScene({
+        gl,
+        useProgram
+    })
 })
 </script>
 

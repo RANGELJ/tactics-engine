@@ -1,7 +1,7 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 
-const gl2DFExampleSetupScene = async (gl: WebGL2RenderingContext) => {
+const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
@@ -94,7 +94,18 @@ const gl2DFExampleSetupScene = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
-    return { program, locations, vao }
+    const useProgram = () => {
+        gl.useProgram(program)
+        gl.uniform2f(locations.uniforms.resolution, gl.canvas.width, gl.canvas.height)
+        gl.uniform2fv(locations.uniforms.translation, [50, 50])
+        const angleInDegrees = 20
+        const angleInRadians = angleInDegrees * Math.PI / 180
+        gl.uniform2fv(locations.uniforms.rotation, [Math.sin(angleInRadians), Math.cos(angleInRadians)])
+        gl.uniform4f(locations.uniforms.color, Math.random(), Math.random(), Math.random(), 1)
+        gl.bindVertexArray(vao)
+    }
+
+    return useProgram
 }
 
-export default gl2DFExampleSetupScene
+export default glProgramBuildBase2DExample
