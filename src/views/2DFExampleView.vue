@@ -2,30 +2,49 @@
     <div class="mainFrame">
         <canvas id="mainCanvas" />
         <div class="toolsPanel">
+            <button @click="printUseProgram">Print use program</button>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import gl2DFExampleDrawScene from '@/shared/gl2DFExampleDrawScene'
-import glProgramBuildBase2DExample from '@/shared/glProgramBuildBase2DExample'
+import glSceneDrawWithProgram from '@/shared/glSceneDrawWithProgram'
+import glProgramBuildBase2DExample, { SceneProgram } from '@/shared/glProgramBuildBase2DExample'
 import { onMounted } from 'vue'
+
+let gl: WebGL2RenderingContext | undefined
+let sceneProgram: SceneProgram | undefined
+
+const drawScene = () => {
+    if (!sceneProgram || !gl) {
+        return
+    }
+    glSceneDrawWithProgram({
+        gl,
+        useProgram: sceneProgram.useProgram
+    })
+}
 
 onMounted(async () => {
     const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
-    const gl = canvas.getContext('webgl2')
+    gl = canvas.getContext('webgl2') ?? undefined
 
     if (!gl) {
         return
     }
 
-    const useProgram = await glProgramBuildBase2DExample(gl)
+    sceneProgram = await glProgramBuildBase2DExample(gl)
 
-    gl2DFExampleDrawScene({
-        gl,
-        useProgram
-    })
+    drawScene()
 })
+
+const printUseProgram = () => {
+    if (!sceneProgram) {
+        return
+    }
+    sceneProgram.translationSet(10, 10)
+    drawScene()
+}
 </script>
 
 <style scoped>

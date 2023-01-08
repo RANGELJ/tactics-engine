@@ -5,7 +5,7 @@ type Args = {
     useProgram: () => void;
 }
 
-const gl2DFExampleDrawScene = ({
+const glSceneDrawWithProgram = ({
     gl,
     useProgram
 }: Args) => {
@@ -23,4 +23,4 @@ const gl2DFExampleDrawScene = ({
     gl.drawArrays(primitiveType, offset2, vertexCount)
 }
 
-export default gl2DFExampleDrawScene
+export default glSceneDrawWithProgram
