@@ -26,15 +26,7 @@ const start = async () => {
     resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
     glRenderTriangles({
-        gl,
-        positions: [
-            10, 20,
-            80, 20,
-            10, 30,
-            10, 30,
-            80, 20,
-            80, 30
-        ]
+        gl
     })
 }
 </script>

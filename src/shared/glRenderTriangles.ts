@@ -1,17 +1,32 @@
-import {
-    ShaderNodeTypes
-} from '@/types'
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 
+const setRectangle = (gl: WebGL2RenderingContext, x: number, y: number, width: number, height: number) => {
+    const x1 = x
+    const x2 = x + width
+    const y1 = y
+    const y2 = y + height
+
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+        x1, y1,
+        x2, y1,
+        x1, y2,
+        x1, y2,
+        x2, y1,
+        x2, y2
+    ]), gl.STATIC_DRAW)
+}
+
+const randomInt = (range: number) => {
+    return Math.floor(Math.random() * range)
+}
+
 type Args = {
     gl: WebGL2RenderingContext;
-    positions: number[];
 }
 
 const glRenderTriangles = async ({
-    gl,
-    positions
+    gl
 }: Args) => {
     const vertexShader = await shaderCreate({
         gl,
@@ -21,7 +36,7 @@ const glRenderTriangles = async ({
     const fragmentShader = await shaderCreate({
         gl,
         type: 'frag',
-        shaderName: 'allPurpleVertices'
+        shaderName: 'allVerticesWithUniformColor'
     })
 
     const program = glCreateProgram({
@@ -33,6 +48,8 @@ const glRenderTriangles = async ({
     // This does not goes on render loop
     const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position')
+    const colorLocation = gl.getUniformLocation(program, 'u_color')
+
     const positionBuffer = gl.createBuffer()
 
     if (!positionBuffer) {
@@ -40,7 +57,6 @@ const glRenderTriangles = async ({
     }
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW)
 
     const vao = gl.createVertexArray()
 
@@ -73,10 +89,21 @@ const glRenderTriangles = async ({
     gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
     gl.bindVertexArray(vao)
 
-    const primitiveType = gl.TRIANGLES
-    const offset2 = 0
-    const vertexCount = positions.length / size
-    gl.drawArrays(primitiveType, offset2, vertexCount)
+    for (let i = 0; i < 50; ++i) {
+        setRectangle(
+            gl,
+            randomInt(300),
+            randomInt(300),
+            randomInt(300),
+            randomInt(300)
+        )
+        gl.uniform4f(colorLocation, Math.random(), Math.random(), Math.random(), 1)
+
+        const primitiveType = gl.TRIANGLES
+        const offset2 = 0
+        const vertexCount = 6
+        gl.drawArrays(primitiveType, offset2, vertexCount)
+    }
 }
 
 export default glRenderTriangles
