@@ -16,7 +16,7 @@ const glRenderTriangles = async ({
     const vertexShader = await shaderCreate({
         gl,
         type: 'vert',
-        shaderName: 'directVertices'
+        shaderName: 'pixelsToClipSpace'
     })
     const fragmentShader = await shaderCreate({
         gl,
@@ -31,6 +31,7 @@ const glRenderTriangles = async ({
     })
 
     // This does not goes on render loop
+    const resolutionUniformLocation = gl.getUniformLocation(program, 'u_resolution')
     const positionAttributeLocation = gl.getAttribLocation(program, 'a_position')
     const positionBuffer = gl.createBuffer()
 
@@ -69,6 +70,7 @@ const glRenderTriangles = async ({
     gl.clear(gl.COLOR_BUFFER_BIT)
 
     gl.useProgram(program)
+    gl.uniform2f(resolutionUniformLocation, gl.canvas.width, gl.canvas.height)
     gl.bindVertexArray(vao)
 
     const primitiveType = gl.TRIANGLES
