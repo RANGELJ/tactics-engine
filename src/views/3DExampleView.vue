@@ -21,6 +21,7 @@
 <script lang="ts" setup>
 import glSceneDrawWithProgram from '@/shared/glSceneDrawWithProgram'
 import glProgramBuild3D, { SceneProgram } from '@/shared/glProgramBuild3D'
+import angleDegreesToRadians from '@/shared/angleDegreesToRadians'
 import { onMounted, ref, watch } from 'vue'
 
 let gl: WebGL2RenderingContext | undefined
@@ -56,8 +57,16 @@ const updateScene = () => {
     if (!sceneProgram) {
         return
     }
-    sceneProgram.translationXSet(translationXInputValue.value)
-    sceneProgram.setXRotationDegrees(rotationXInputValue.value)
+    sceneProgram.setTranslation(
+        translationXInputValue.value,
+        0,
+        0
+    )
+    sceneProgram.setRotation(
+        angleDegreesToRadians(rotationXInputValue.value),
+        0,
+        0
+    )
     drawScene()
 }
 
