@@ -26,7 +26,8 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     // This does not goes on render loop
     const locations = {
         uniforms: {
-            matrix: gl.getUniformLocation(program, 'u_matrix')
+            matrix: gl.getUniformLocation(program, 'u_matrix'),
+            fudge: gl.getUniformLocation(program, 'u_fudgeFactor')
         },
         attributes: {
             verticesPosition: gl.getAttribLocation(program, 'a_position'),
@@ -105,6 +106,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     const translation = [0, 0, 0]
     const rotations = [0, 0, 0]
+    const fudgeFactor = 1
 
     const useProgram = () => {
         gl.useProgram(program)
@@ -124,6 +126,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             .rotateZ(rotations[2])
             .value
 
+        gl.uniform1f(locations.uniforms.fudge, fudgeFactor)
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
         gl.bindVertexArray(vao)
