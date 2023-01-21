@@ -95,17 +95,17 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     )
 
     const translation = [0, 0]
-    let angleInDegrees = 33
+    let angleXInDegrees = 0
 
     const useProgram = () => {
         gl.useProgram(program)
 
-        const angleInRadians = angleInDegrees * Math.PI / 180
+        const angleXInRadians = angleXInDegrees * Math.PI / 180
 
         const canvas = gl.canvas as HTMLCanvasElement
         const matrix = matrix3DBuild(matrix3DGetProjection(canvas.clientWidth, canvas.clientHeight, 400))
             .translate(translation[0], translation[1], 0)
-            .rotateX(angleInRadians)
+            .rotateX(angleXInRadians)
             .value
 
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
@@ -119,8 +119,8 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         translationXSet: (x: number) => {
             translation[0] = x
         },
-        setRotationDegrees: (degrees: number) => {
-            angleInDegrees = degrees
+        setXRotationDegrees: (degrees: number) => {
+            angleXInDegrees = degrees
         }
     }
 }
