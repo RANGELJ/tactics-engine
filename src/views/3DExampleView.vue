@@ -4,23 +4,40 @@
             <canvas id="mainCanvas" />
         </div>
         <div class="toolsPanel">
+            <span class="inputLabel">Translation X</span>
             <input
                 type="range"
                 min="0"
                 max="500"
                 v-model="translationXInputValue"
             />
+            <span class="inputLabel">Translation Y</span>
             <input
                 type="range"
                 min="0"
                 max="500"
                 v-model="translationYInputValue"
             />
+            <span class="inputLabel">Translation Z</span>
             <input
                 type="range"
                 min="0"
-                max="180"
+                max="500"
+                v-model="translationZInputValue"
+            />
+            <span class="inputLabel">Rotation X</span>
+            <input
+                type="range"
+                min="0"
+                max="360"
                 v-model="rotationXInputValue"
+            />
+            <span class="inputLabel">Rotation Y</span>
+            <input
+                type="range"
+                min="0"
+                max="360"
+                v-model="rotationYInputValue"
             />
         </div>
     </div>
@@ -61,7 +78,9 @@ onMounted(async () => {
 
 const translationXInputValue = ref(0)
 const translationYInputValue = ref(0)
+const translationZInputValue = ref(0)
 const rotationXInputValue = ref(0)
+const rotationYInputValue = ref(0)
 
 const updateScene = () => {
     if (!sceneProgram) {
@@ -70,11 +89,11 @@ const updateScene = () => {
     sceneProgram.setTranslation(
         translationXInputValue.value,
         translationYInputValue.value,
-        0
+        translationZInputValue.value
     )
     sceneProgram.setRotation(
         angleDegreesToRadians(rotationXInputValue.value),
-        0,
+        angleDegreesToRadians(rotationYInputValue.value),
         0
     )
     drawScene()
@@ -83,7 +102,9 @@ const updateScene = () => {
 watch([
     translationXInputValue,
     translationYInputValue,
-    rotationXInputValue
+    translationZInputValue,
+    rotationXInputValue,
+    rotationYInputValue
 ], () => {
     updateScene()
 })
@@ -123,5 +144,10 @@ watch([
 #mainCanvas {
     width: 100%;
     height: 100%;
+}
+
+.inputLabel {
+    font-size: 14px;
+    font-weight: 700;
 }
 </style>
