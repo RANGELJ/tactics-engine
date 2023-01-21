@@ -2,7 +2,12 @@
     <div class="mainFrame">
         <canvas id="mainCanvas" />
         <div class="toolsPanel">
-            <button @click="printUseProgram">Rotate</button>
+            <input
+                type="range"
+                min="0"
+                max="100"
+                v-model="translationInputValue"
+            />
         </div>
     </div>
 </template>
@@ -10,7 +15,7 @@
 <script lang="ts" setup>
 import glSceneDrawWithProgram from '@/shared/glSceneDrawWithProgram'
 import glProgramBuild3D, { SceneProgram } from '@/shared/glProgramBuild3D'
-import { onMounted } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 
 let gl: WebGL2RenderingContext | undefined
 let sceneProgram: SceneProgram | undefined
@@ -38,13 +43,19 @@ onMounted(async () => {
     drawScene()
 })
 
-const printUseProgram = () => {
+const translationInputValue = ref(0)
+
+const updateScene = () => {
     if (!sceneProgram) {
         return
     }
-    sceneProgram.setRotationDegrees(50)
+    sceneProgram.translationXSet(translationInputValue.value)
     drawScene()
 }
+
+watch(translationInputValue, () => {
+    updateScene()
+})
 </script>
 
 <style scoped>

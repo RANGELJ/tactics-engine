@@ -94,7 +94,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
-    const translation = [150, 100]
+    const translation = [0, 0]
     let angleInDegrees = 33
 
     const useProgram = () => {
@@ -116,9 +116,8 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     return {
         useProgram,
-        translationSet: (x: number, y: number) => {
+        translationXSet: (x: number) => {
             translation[0] = x
-            translation[1] = y
         },
         setRotationDegrees: (degrees: number) => {
             angleInDegrees = degrees
