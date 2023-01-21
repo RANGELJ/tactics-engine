@@ -1,9 +1,9 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 import matrix3DBuild from './matrix3DBuild'
-import matrix3DGetProjection from './matrix3DGetProjection'
 import colorsPerVertex from '@/assets/colorsPerVertex'
 import vertices from '@/assets/vertices'
+import matrix3DGetOrtographic from './matrix3DGetOrtographic'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -110,7 +110,14 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         gl.useProgram(program)
 
         const canvas = gl.canvas as HTMLCanvasElement
-        const matrix = matrix3DBuild(matrix3DGetProjection(canvas.clientWidth, canvas.clientHeight, 400))
+        const matrix = matrix3DBuild(matrix3DGetOrtographic({
+            bottom: canvas.clientHeight,
+            left: 0,
+            far: -400,
+            near: 400,
+            right: canvas.clientWidth,
+            top: 0
+        }))
             .translate(translation[0], translation[1], translation[2])
             .rotateX(rotations[0])
             .rotateY(rotations[1])
