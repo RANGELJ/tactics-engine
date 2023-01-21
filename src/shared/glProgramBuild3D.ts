@@ -12,7 +12,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const fragmentShader = await shaderCreate({
         gl,
         type: 'frag',
-        shaderName: 'allVerticesWithUniformColor'
+        shaderName: 'example3DTransformsColor'
     })
 
     const program = glCreateProgram({
@@ -24,13 +24,155 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     // This does not goes on render loop
     const locations = {
         uniforms: {
-            matrix: gl.getUniformLocation(program, 'u_matrix'),
-            color: gl.getUniformLocation(program, 'u_color')
+            matrix: gl.getUniformLocation(program, 'u_matrix')
         },
         attributes: {
-            verticesPosition: gl.getAttribLocation(program, 'a_position')
+            verticesPosition: gl.getAttribLocation(program, 'a_position'),
+            colors: gl.getAttribLocation(program, 'a_color')
         }
     } as const
+
+    const colorBuffer = gl.createBuffer()
+
+    if (!colorBuffer) {
+        throw new Error('Could not create color buffer')
+    }
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer)
+
+    gl.bufferData(
+        gl.ARRAY_BUFFER,
+        new Uint8Array([
+            // left column front
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+
+            // top rung front
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+
+            // middle rung front
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+            200, 70, 120,
+
+            // left column back
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+
+            // top rung back
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+
+            // middle rung back
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+            80, 70, 200,
+
+            // top
+            70, 200, 210,
+            70, 200, 210,
+            70, 200, 210,
+            70, 200, 210,
+            70, 200, 210,
+            70, 200, 210,
+
+            // top rung right
+            200, 200, 70,
+            200, 200, 70,
+            200, 200, 70,
+            200, 200, 70,
+            200, 200, 70,
+            200, 200, 70,
+
+            // under top rung
+            210, 100, 70,
+            210, 100, 70,
+            210, 100, 70,
+            210, 100, 70,
+            210, 100, 70,
+            210, 100, 70,
+
+            // between top rung and middle
+            210, 160, 70,
+            210, 160, 70,
+            210, 160, 70,
+            210, 160, 70,
+            210, 160, 70,
+            210, 160, 70,
+
+            // top of middle rung
+            70, 180, 210,
+            70, 180, 210,
+            70, 180, 210,
+            70, 180, 210,
+            70, 180, 210,
+            70, 180, 210,
+
+            // right of middle rung
+            100, 70, 210,
+            100, 70, 210,
+            100, 70, 210,
+            100, 70, 210,
+            100, 70, 210,
+            100, 70, 210,
+
+            // bottom of middle rung.
+            76, 210, 100,
+            76, 210, 100,
+            76, 210, 100,
+            76, 210, 100,
+            76, 210, 100,
+            76, 210, 100,
+
+            // right of bottom
+            140, 210, 80,
+            140, 210, 80,
+            140, 210, 80,
+            140, 210, 80,
+            140, 210, 80,
+            140, 210, 80,
+
+            // bottom
+            90, 130, 110,
+            90, 130, 110,
+            90, 130, 110,
+            90, 130, 110,
+            90, 130, 110,
+            90, 130, 110,
+
+            // left side
+            160, 160, 220,
+            160, 160, 220,
+            160, 160, 220,
+            160, 160, 220,
+            160, 160, 220,
+            160, 160, 220
+        ]),
+        gl.STATIC_DRAW
+    )
 
     const positionBuffer = gl.createBuffer()
 
@@ -198,6 +340,22 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         offset
     )
 
+    gl.enableVertexAttribArray(locations.attributes.colors)
+    // Tell the attribute how to get data out of colorBuffer (ARRAY_BUFFER)
+    gl.vertexAttribPointer(
+        locations.attributes.colors,
+        // size (3 components per iteration)
+        3,
+        // type (the data is 8bit unsigned bytes)
+        gl.UNSIGNED_BYTE,
+        // normalize (convert from 0-255 to 0.0-1.0)
+        true,
+        // stride (0 = move forward size * sizeof(type) each iteration to get the next color)
+        0,
+        // offset (start at the beginning of the buffer)
+        0
+    )
+
     const translation = [0, 0, 0]
     const rotations = [0, 0, 0]
 
@@ -214,7 +372,6 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
-        gl.uniform4f(locations.uniforms.color, 1, 1, 1, 1)
         gl.bindVertexArray(vao)
     }
 
