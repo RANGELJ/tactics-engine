@@ -3,11 +3,13 @@ import resizeCanvasToDisplaySize from '@/shared/resizeCanvasToDisplaySize'
 type Args = {
     gl: WebGL2RenderingContext;
     useProgram: () => void;
+    vertexCount: number;
 }
 
 const glSceneDrawWithProgram = ({
     gl,
-    useProgram
+    useProgram,
+    vertexCount
 }: Args) => {
     resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
@@ -19,7 +21,6 @@ const glSceneDrawWithProgram = ({
 
     const primitiveType = gl.TRIANGLES
     const offset2 = 0
-    const vertexCount = 18
     gl.drawArrays(primitiveType, offset2, vertexCount)
 }
 

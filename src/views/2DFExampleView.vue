@@ -21,7 +21,8 @@ const drawScene = () => {
     }
     glSceneDrawWithProgram({
         gl,
-        useProgram: sceneProgram.useProgram
+        useProgram: sceneProgram.useProgram,
+        vertexCount: sceneProgram.vertexCount
     })
 }
 

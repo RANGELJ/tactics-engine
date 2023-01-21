@@ -120,6 +120,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     return {
         useProgram,
+        vertexCount: 18,
         translationSet: (x: number, y: number) => {
             translation[0] = x
             translation[1] = y
