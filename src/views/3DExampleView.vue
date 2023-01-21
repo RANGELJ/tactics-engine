@@ -4,6 +4,13 @@
             <canvas id="mainCanvas" />
         </div>
         <div class="toolsPanel">
+            <span class="inputLabel">Fudge factor</span>
+            <input
+                type="range"
+                min="0"
+                max="300"
+                v-model="fudgeFactorInputValue"
+            />
             <span class="inputLabel">Translation X</span>
             <input
                 type="range"
@@ -76,6 +83,7 @@ onMounted(async () => {
     drawScene()
 })
 
+const fudgeFactorInputValue = ref(100)
 const translationXInputValue = ref(0)
 const translationYInputValue = ref(0)
 const translationZInputValue = ref(0)
@@ -86,6 +94,9 @@ const updateScene = () => {
     if (!sceneProgram) {
         return
     }
+    sceneProgram.setFudgeFactor(
+        fudgeFactorInputValue.value / 100
+    )
     sceneProgram.setTranslation(
         translationXInputValue.value,
         translationYInputValue.value,
@@ -100,6 +111,7 @@ const updateScene = () => {
 }
 
 watch([
+    fudgeFactorInputValue,
     translationXInputValue,
     translationYInputValue,
     translationZInputValue,

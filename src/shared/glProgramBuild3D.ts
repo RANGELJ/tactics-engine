@@ -106,7 +106,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     const translation = [0, 0, 0]
     const rotations = [0, 0, 0]
-    const fudgeFactor = 1
+    let fudgeFactor = 1
 
     const useProgram = () => {
         gl.useProgram(program)
@@ -144,6 +144,9 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             rotations[0] = x
             rotations[1] = y
             rotations[2] = z
+        },
+        setFudgeFactor: (value: number) => {
+            fudgeFactor = value
         }
     }
 }
