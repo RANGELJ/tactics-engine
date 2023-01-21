@@ -11,6 +11,12 @@
             <input
                 type="range"
                 min="0"
+                max="500"
+                v-model="translationYInputValue"
+            />
+            <input
+                type="range"
+                min="0"
                 max="180"
                 v-model="rotationXInputValue"
             />
@@ -51,6 +57,7 @@ onMounted(async () => {
 })
 
 const translationXInputValue = ref(0)
+const translationYInputValue = ref(0)
 const rotationXInputValue = ref(0)
 
 const updateScene = () => {
@@ -59,7 +66,7 @@ const updateScene = () => {
     }
     sceneProgram.setTranslation(
         translationXInputValue.value,
-        0,
+        translationYInputValue.value,
         0
     )
     sceneProgram.setRotation(
@@ -70,7 +77,11 @@ const updateScene = () => {
     drawScene()
 }
 
-watch([translationXInputValue, rotationXInputValue], () => {
+watch([
+    translationXInputValue,
+    translationYInputValue,
+    rotationXInputValue
+], () => {
     updateScene()
 })
 </script>
