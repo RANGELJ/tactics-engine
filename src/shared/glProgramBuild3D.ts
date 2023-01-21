@@ -107,7 +107,6 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             .translate(translation[0], translation[1], 0)
             .rotateX(angleInRadians)
             .value
-        console.log('matrix', matrix)
 
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
