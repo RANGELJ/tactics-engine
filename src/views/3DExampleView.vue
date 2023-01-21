@@ -1,6 +1,8 @@
 <template>
     <div class="mainFrame">
-        <canvas id="mainCanvas" />
+        <div class="canvasContainer">
+            <canvas id="mainCanvas" />
+        </div>
         <div class="toolsPanel">
             <input
                 type="range"
@@ -100,11 +102,25 @@ watch([
 .toolsPanel {
     grid-column-start: 4;
     grid-row-start: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 10px;
+    padding-left: 10px;
+    border-width: 1px;
+    border-style: dashed;
+}
+
+.canvasContainer {
+    grid-column-start: 2;
+    grid-row-start: 2;
+    display: flex;
+    border-width: 1px;
+    border-style: dashed;
 }
 
 #mainCanvas {
-    grid-column-start: 2;
-    grid-row-start: 2;
     width: 100%;
     height: 100%;
 }
