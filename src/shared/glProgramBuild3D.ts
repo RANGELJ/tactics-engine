@@ -26,8 +26,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     // This does not goes on render loop
     const locations = {
         uniforms: {
-            matrix: gl.getUniformLocation(program, 'u_matrix'),
-            fudge: gl.getUniformLocation(program, 'u_fudgeFactor')
+            matrix: gl.getUniformLocation(program, 'u_matrix')
         },
         attributes: {
             verticesPosition: gl.getAttribLocation(program, 'a_position'),
@@ -112,21 +111,27 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         gl.useProgram(program)
 
         const canvas = gl.canvas as HTMLCanvasElement
-        const matrix = matrix3DBuild(matrix3DGetOrthographic({
-            bottom: canvas.clientHeight,
-            left: 0,
-            far: -400,
-            near: 400,
-            right: canvas.clientWidth,
-            top: 0
-        }))
+
+        const matrix = matrix3DBuild([
+            1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, fudgeFactor,
+            0, 0, 0, 1
+        ])
+            .multiply(matrix3DGetOrthographic({
+                bottom: canvas.clientHeight,
+                left: 0,
+                far: -400,
+                near: 400,
+                right: canvas.clientWidth,
+                top: 0
+            }))
             .translate(translation[0], translation[1], translation[2])
             .rotateX(rotations[0])
             .rotateY(rotations[1])
             .rotateZ(rotations[2])
             .value
 
-        gl.uniform1f(locations.uniforms.fudge, fudgeFactor)
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
         gl.bindVertexArray(vao)

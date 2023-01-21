@@ -52,7 +52,8 @@ const matrix3DBuild = (initial: number[]) => ({
             0, 0, 0, 1
         ]
         return matrix3DBuild(matrix3DMultiply(initial, rotationMatrix))
-    }
+    },
+    multiply: (matrix: number[]) => matrix3DBuild(matrix3DMultiply(initial, matrix))
 })
 
 export default matrix3DBuild
