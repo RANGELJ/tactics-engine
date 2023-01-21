@@ -1,4 +1,4 @@
-const matrix2DRotationBuildFromRadians = (angleInRadians: number) => {
+const matrix2DBuildRotationFromRadians = (angleInRadians: number) => {
     const c = Math.cos(angleInRadians)
     const s = Math.sin(angleInRadians)
     return [
@@ -8,4 +8,4 @@ const matrix2DRotationBuildFromRadians = (angleInRadians: number) => {
     ]
 }
 
-export default matrix2DRotationBuildFromRadians
+export default matrix2DBuildRotationFromRadians
