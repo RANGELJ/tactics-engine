@@ -1,9 +1,7 @@
 import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
-import matrix2DGetProjection from '@/shared/matrix2DGetProjection'
-import matrix2DTranslate from '@/shared/matrix2DTranslate'
-import matrix2DRotateInRadians from '@/shared/matrix2DRotateInRadians'
-import matrix2DScale from '@/shared/matrix2DScale'
+import matrix3DBuild from './matrix3DBuild'
+import matrix3DGetProjection from './matrix3DGetProjection'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -105,14 +103,13 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         const angleInRadians = angleInDegrees * Math.PI / 180
 
         const canvas = gl.canvas as HTMLCanvasElement
+        const matrix = matrix3DBuild(matrix3DGetProjection(canvas.clientWidth, canvas.clientHeight, 400))
+            .translate(translation[0], translation[1], 0)
+            .rotateX(angleInRadians)
+            .value
+        console.log('matrix', matrix)
 
-        const projectionMatrix = matrix2DGetProjection(canvas.clientWidth, canvas.clientHeight)
-
-        let matrix = matrix2DTranslate(projectionMatrix, translation[0], translation[1])
-        matrix = matrix2DRotateInRadians(matrix, angleInRadians)
-        matrix = matrix2DScale(matrix, 2, 1.5)
-
-        gl.uniformMatrix3fv(locations.uniforms.matrix, false, matrix)
+        gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
         gl.uniform4f(locations.uniforms.color, Math.random(), Math.random(), Math.random(), 1)
         gl.bindVertexArray(vao)
