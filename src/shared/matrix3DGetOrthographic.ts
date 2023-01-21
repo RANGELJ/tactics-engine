@@ -7,7 +7,7 @@ type Args = {
     far: number;
 }
 
-const matrix3DGetOrtographic = ({
+const matrix3DGetOrthographic = ({
     bottom,
     far,
     left,
@@ -25,4 +25,4 @@ const matrix3DGetOrtographic = ({
     1
 ]
 
-export default matrix3DGetOrtographic
+export default matrix3DGetOrthographic
