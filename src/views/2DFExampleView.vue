@@ -11,6 +11,7 @@
 import glSceneDrawWithProgram from '@/shared/glSceneDrawWithProgram'
 import glProgramBuildBase2DExample, { SceneProgram } from '@/shared/glProgramBuildBase2DExample'
 import { onMounted } from 'vue'
+import functionalComposeLeftToRight from '@/shared/functionalComposeLeftToRight'
 
 let gl: WebGL2RenderingContext | undefined
 let sceneProgram: SceneProgram | undefined
@@ -39,6 +40,21 @@ onMounted(async () => {
 })
 
 const printUseProgram = () => {
+    functionalComposeLeftToRight<number>(
+        (a) => {
+            console.log('A', a)
+            return a
+        },
+        (a) => {
+            console.log('B', a)
+            return a
+        },
+        (a) => {
+            console.log('C', a)
+            return a
+        }
+    )(10)
+
     if (!sceneProgram) {
         return
     }
