@@ -51,24 +51,12 @@
 </template>
 
 <script lang="ts" setup>
-import glSceneDrawWithProgram from '@/shared/glSceneDrawWithProgram'
 import glProgramBuild3D, { SceneProgram } from '@/shared/glProgramBuild3D'
 import angleDegreesToRadians from '@/shared/angleDegreesToRadians'
 import { onMounted, ref, watch } from 'vue'
 
 let gl: WebGL2RenderingContext | undefined
 let sceneProgram: SceneProgram | undefined
-
-const drawScene = () => {
-    if (!sceneProgram || !gl) {
-        return
-    }
-    glSceneDrawWithProgram({
-        gl,
-        useProgram: sceneProgram.useProgram,
-        vertexCount: sceneProgram.vertexCount
-    })
-}
 
 const fieldOfViewValue = ref(60)
 const translationXInputValue = ref(-150)
@@ -94,7 +82,7 @@ const updateScene = () => {
         angleDegreesToRadians(rotationYInputValue.value),
         0
     )
-    drawScene()
+    sceneProgram.drawScene()
 }
 
 watch([

@@ -4,6 +4,7 @@ import matrix3DBuild from './matrix3DBuild'
 import colorsPerVertex from '@/assets/colorsPerVertex'
 import vertices from '@/assets/vertices'
 import matrix3DGetProjection from './matrix3DGetProjection'
+import resizeCanvasToDisplaySize from './resizeCanvasToDisplaySize'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -109,6 +110,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     const useProgram = () => {
         gl.useProgram(program)
+        gl.bindVertexArray(vao)
 
         const canvas = gl.canvas as HTMLCanvasElement
 
@@ -126,12 +128,28 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
         gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
 
-        gl.bindVertexArray(vao)
+        const primitiveType = gl.TRIANGLES
+        const offset2 = 0
+        const vertexCount = 16 * 6
+        gl.drawArrays(primitiveType, offset2, vertexCount)
+    }
+
+    const drawScene = () => {
+        resizeCanvasToDisplaySize(gl.canvas as HTMLCanvasElement)
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height)
+
+        gl.clearColor(0, 0, 0, 0)
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
+
+        gl.enable(gl.CULL_FACE)
+        gl.enable(gl.DEPTH_TEST)
+
+        useProgram()
     }
 
     return {
-        useProgram,
-        vertexCount: 16 * 6,
+        drawScene,
         setTranslation: (x: number, y: number, z: number) => {
             translation[0] = x
             translation[1] = y
