@@ -3,7 +3,7 @@ import glCreateProgram from '@/shared/glCreateProgram'
 import matrix3DBuild from './matrix3DBuild'
 import colorsPerVertex from '@/assets/colorsPerVertex'
 import vertices from '@/assets/vertices'
-import matrix3DGetOrthographic from './matrix3DGetOrthographic'
+import matrix3DGetProjection from './matrix3DGetProjection'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -105,27 +105,19 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     const translation = [0, 0, 0]
     const rotations = [0, 0, 0]
-    let fudgeFactor = 1
+    let fieldOfViewInRadians = 0
 
     const useProgram = () => {
         gl.useProgram(program)
 
         const canvas = gl.canvas as HTMLCanvasElement
 
-        const matrix = matrix3DBuild([
-            1, 0, 0, 0,
-            0, 1, 0, 0,
-            0, 0, 1, fudgeFactor,
-            0, 0, 0, 1
-        ])
-            .multiply(matrix3DGetOrthographic({
-                bottom: canvas.clientHeight,
-                left: 0,
-                far: -400,
-                near: 400,
-                right: canvas.clientWidth,
-                top: 0
-            }))
+        const matrix = matrix3DBuild(matrix3DGetProjection({
+            aspect: canvas.clientWidth / canvas.clientHeight,
+            far: 2000,
+            near: 1,
+            fieldOfViewInRadians
+        }))
             .translate(translation[0], translation[1], translation[2])
             .rotateX(rotations[0])
             .rotateY(rotations[1])
@@ -150,8 +142,8 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             rotations[1] = y
             rotations[2] = z
         },
-        setFudgeFactor: (value: number) => {
-            fudgeFactor = value
+        setFieldOfViewInRadians: (value: number) => {
+            fieldOfViewInRadians = value
         }
     }
 }

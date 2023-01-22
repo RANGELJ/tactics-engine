@@ -4,31 +4,31 @@
             <canvas id="mainCanvas" />
         </div>
         <div class="toolsPanel">
-            <span class="inputLabel">Fudge factor</span>
+            <span class="inputLabel">Field of view in radians</span>
             <input
                 type="range"
                 min="0"
                 max="300"
-                v-model="fudgeFactorInputValue"
+                v-model="fieldOfViewValue"
             />
             <span class="inputLabel">Translation X</span>
             <input
                 type="range"
-                min="0"
+                min="-500"
                 max="500"
                 v-model="translationXInputValue"
             />
             <span class="inputLabel">Translation Y</span>
             <input
                 type="range"
-                min="0"
+                min="-500"
                 max="500"
                 v-model="translationYInputValue"
             />
             <span class="inputLabel">Translation Z</span>
             <input
                 type="range"
-                min="0"
+                min="-500"
                 max="500"
                 v-model="translationZInputValue"
             />
@@ -70,32 +70,19 @@ const drawScene = () => {
     })
 }
 
-onMounted(async () => {
-    const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
-    gl = canvas.getContext('webgl2') ?? undefined
-
-    if (!gl) {
-        return
-    }
-
-    sceneProgram = await glProgramBuild3D(gl)
-
-    drawScene()
-})
-
-const fudgeFactorInputValue = ref(100)
-const translationXInputValue = ref(0)
+const fieldOfViewValue = ref(60)
+const translationXInputValue = ref(-150)
 const translationYInputValue = ref(0)
-const translationZInputValue = ref(0)
-const rotationXInputValue = ref(0)
-const rotationYInputValue = ref(0)
+const translationZInputValue = ref(-360)
+const rotationXInputValue = ref(190)
+const rotationYInputValue = ref(40)
 
 const updateScene = () => {
     if (!sceneProgram) {
         return
     }
-    sceneProgram.setFudgeFactor(
-        fudgeFactorInputValue.value / 100
+    sceneProgram.setFieldOfViewInRadians(
+        angleDegreesToRadians(fieldOfViewValue.value)
     )
     sceneProgram.setTranslation(
         translationXInputValue.value,
@@ -111,13 +98,26 @@ const updateScene = () => {
 }
 
 watch([
-    fudgeFactorInputValue,
+    fieldOfViewValue,
     translationXInputValue,
     translationYInputValue,
     translationZInputValue,
     rotationXInputValue,
     rotationYInputValue
 ], () => {
+    updateScene()
+})
+
+onMounted(async () => {
+    const canvas = document.getElementById('mainCanvas') as HTMLCanvasElement
+    gl = canvas.getContext('webgl2') ?? undefined
+
+    if (!gl) {
+        return
+    }
+
+    sceneProgram = await glProgramBuild3D(gl)
+
     updateScene()
 })
 </script>
