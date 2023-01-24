@@ -2,13 +2,13 @@ import shaderCreate from '@/shared/shaderCreate'
 import glCreateProgram from '@/shared/glCreateProgram'
 import matrix3DBuild from './matrix3DBuild'
 import colorsPerVertex from '@/assets/colorsPerVertex'
-import vertices from '@/assets/vertices'
 import matrix3DGetProjection from './matrix3DGetProjection'
 import resizeCanvasToDisplaySize from './resizeCanvasToDisplaySize'
 import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
 import matrix3DBuildRotationYMatrix from './matrix3DBuildRotationYMatrix'
 import matrix3DMultiply from './matrix3DMultiply'
 import matrix3DBuildLookAtMatrix from './matrix3DBuildLookAtMatrix'
+import { Board } from '@/types'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -57,15 +57,25 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
 
-    const verticesMatrix = matrix3DBuild(matrix3DBuildRotationXMatrix(Math.PI))
-        .translate(-50, -75, -15)
-
-    for (let ii = 0; ii < vertices.length; ii += 3) {
-        const vector = verticesMatrix.applyToVec4([vertices[ii + 0], vertices[ii + 1], vertices[ii + 2], 1])
-        vertices[ii + 0] = vector[0]
-        vertices[ii + 1] = vector[1]
-        vertices[ii + 2] = vector[2]
+    const board: Board = {
+        cellSize: 10,
+        width: 10,
+        height: 10,
+        depth: 10,
+        cells: []
     }
+
+    const totalHeight = board.height * board.cellSize
+    const totalWidth = board.width * board.cellSize
+
+    const vertices = new Float32Array([
+        totalWidth, 0, 0,
+        0, totalHeight, 0,
+        0, 0, 0,
+        totalWidth, 0, 0,
+        totalWidth, totalHeight, 0,
+        0, totalHeight, 0
+    ])
 
     gl.bufferData(
         gl.ARRAY_BUFFER,
@@ -160,22 +170,13 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             viewMatrix.value
         ))
 
-        for (let ii = 0; ii < numFs; ++ii) {
-            const angle = ii * Math.PI * 2 / numFs
+        gl.uniformMatrix4fv(locations.uniforms.matrix, false, viewProjectionMatrix.value)
 
-            const x = Math.cos(angle) * radius
-            const z = Math.sin(angle) * radius
-            const matrix = viewProjectionMatrix.translate(x, 0, z)
-
-            // Set the matrix.
-            gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix.value)
-
-            // Draw the geometry.
-            const primitiveType = gl.TRIANGLES
-            const offset = 0
-            const count = 16 * 6
-            gl.drawArrays(primitiveType, offset, count)
-        }
+        // Draw the geometry.
+        const primitiveType = gl.TRIANGLES
+        const offset = 0
+        const count = 6
+        gl.drawArrays(primitiveType, offset, count)
     }
 
     const drawScene = () => {
