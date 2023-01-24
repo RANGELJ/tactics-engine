@@ -6,6 +6,8 @@ import vertices from '@/assets/vertices'
 import matrix3DGetProjection from './matrix3DGetProjection'
 import resizeCanvasToDisplaySize from './resizeCanvasToDisplaySize'
 import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
+import matrix3DBuildRotationYMatrix from './matrix3DBuildRotationYMatrix'
+import matrix3DMultiply from './matrix3DMultiply'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -115,9 +117,10 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         0
     )
 
-    const translation = [0, 0, 0]
-    const rotations = [0, 0, 0]
     let fieldOfViewInRadians = 0
+    const cameraAngleRadians = 0
+    const numFs = 5
+    const radius = 200
 
     const useProgram = () => {
         gl.useProgram(program)
@@ -125,24 +128,39 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
         const canvas = gl.canvas as HTMLCanvasElement
 
-        const matrix = matrix3DBuild(matrix3DGetProjection({
+        const projectionMatrix = matrix3DGetProjection({
             aspect: canvas.clientWidth / canvas.clientHeight,
             far: 2000,
             near: 1,
             fieldOfViewInRadians
-        }))
-            .translate(translation[0], translation[1], translation[2])
-            .rotateX(rotations[0])
-            .rotateY(rotations[1])
-            .rotateZ(rotations[2])
-            .value
+        })
 
-        gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix)
+        const cameraMatrix = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
+            .translate(0, 0, radius * 1.5)
 
-        const primitiveType = gl.TRIANGLES
-        const offset2 = 0
-        const vertexCount = 16 * 6
-        gl.drawArrays(primitiveType, offset2, vertexCount)
+        const viewMatrix = cameraMatrix.inverse()
+
+        const viewProjectionMatrix = matrix3DBuild(matrix3DMultiply(
+            projectionMatrix,
+            viewMatrix.value
+        ))
+
+        for (let ii = 0; ii < numFs; ++ii) {
+            const angle = ii * Math.PI * 2 / numFs
+
+            const x = Math.cos(angle) * radius
+            const z = Math.sin(angle) * radius
+            const matrix = viewProjectionMatrix.translate(x, 0, z)
+
+            // Set the matrix.
+            gl.uniformMatrix4fv(locations.uniforms.matrix, false, matrix.value)
+
+            // Draw the geometry.
+            const primitiveType = gl.TRIANGLES
+            const offset = 0
+            const count = 16 * 6
+            gl.drawArrays(primitiveType, offset, count)
+        }
     }
 
     const drawScene = () => {
@@ -161,16 +179,6 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
     return {
         drawScene,
-        setTranslation: (x: number, y: number, z: number) => {
-            translation[0] = x
-            translation[1] = y
-            translation[2] = z
-        },
-        setRotation: (x: number, y: number, z: number) => {
-            rotations[0] = x
-            rotations[1] = y
-            rotations[2] = z
-        },
         setFieldOfViewInRadians: (value: number) => {
             fieldOfViewInRadians = value
         }

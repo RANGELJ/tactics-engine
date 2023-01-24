@@ -11,41 +11,6 @@
                 max="300"
                 v-model="fieldOfViewValue"
             />
-            <span class="inputLabel">Translation X</span>
-            <input
-                type="range"
-                min="-500"
-                max="500"
-                v-model="translationXInputValue"
-            />
-            <span class="inputLabel">Translation Y</span>
-            <input
-                type="range"
-                min="-500"
-                max="500"
-                v-model="translationYInputValue"
-            />
-            <span class="inputLabel">Translation Z</span>
-            <input
-                type="range"
-                min="-500"
-                max="500"
-                v-model="translationZInputValue"
-            />
-            <span class="inputLabel">Rotation X</span>
-            <input
-                type="range"
-                min="0"
-                max="360"
-                v-model="rotationXInputValue"
-            />
-            <span class="inputLabel">Rotation Y</span>
-            <input
-                type="range"
-                min="0"
-                max="360"
-                v-model="rotationYInputValue"
-            />
         </div>
     </div>
 </template>
@@ -59,11 +24,6 @@ let gl: WebGL2RenderingContext | undefined
 let sceneProgram: SceneProgram | undefined
 
 const fieldOfViewValue = ref(60)
-const translationXInputValue = ref(-150)
-const translationYInputValue = ref(0)
-const translationZInputValue = ref(-360)
-const rotationXInputValue = ref(190)
-const rotationYInputValue = ref(40)
 
 const updateScene = () => {
     if (!sceneProgram) {
@@ -72,26 +32,11 @@ const updateScene = () => {
     sceneProgram.setFieldOfViewInRadians(
         angleDegreesToRadians(fieldOfViewValue.value)
     )
-    sceneProgram.setTranslation(
-        translationXInputValue.value,
-        translationYInputValue.value,
-        translationZInputValue.value
-    )
-    sceneProgram.setRotation(
-        angleDegreesToRadians(rotationXInputValue.value),
-        angleDegreesToRadians(rotationYInputValue.value),
-        0
-    )
     sceneProgram.drawScene()
 }
 
 watch([
-    fieldOfViewValue,
-    translationXInputValue,
-    translationYInputValue,
-    translationZInputValue,
-    rotationXInputValue,
-    rotationYInputValue
+    fieldOfViewValue
 ], () => {
     updateScene()
 })

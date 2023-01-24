@@ -1,4 +1,5 @@
 import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
+import matrix3DBuildRotationYMatrix from './matrix3DBuildRotationYMatrix'
 import matrix3DMultiply from './matrix3DMultiply'
 
 const matrix3DBuild = (initial: number[]) => ({
@@ -22,17 +23,7 @@ const matrix3DBuild = (initial: number[]) => ({
         return matrix3DBuild(matrix3DMultiply(initial, scaleMatrix))
     },
     rotateX: (angleInRadians: number) => matrix3DBuild(matrix3DMultiply(initial, matrix3DBuildRotationXMatrix(angleInRadians))),
-    rotateY: (angleInRadians: number) => {
-        const c = Math.cos(angleInRadians)
-        const s = Math.sin(angleInRadians)
-        const rotationMatrix = [
-            c, 0, -s, 0,
-            0, 1, 0, 0,
-            s, 0, c, 0,
-            0, 0, 0, 1
-        ]
-        return matrix3DBuild(matrix3DMultiply(initial, rotationMatrix))
-    },
+    rotateY: (angleInRadians: number) => matrix3DBuild(matrix3DMultiply(initial, matrix3DBuildRotationYMatrix(angleInRadians))),
     rotateZ: (angleInRadians: number) => {
         const c = Math.cos(angleInRadians)
         const s = Math.sin(angleInRadians)
@@ -108,7 +99,7 @@ const matrix3DBuild = (initial: number[]) => ({
 
         const d = 1.0 / (m00 * t0 + m10 * t1 + m20 * t2 + m30 * t3)
 
-        return [
+        return matrix3DBuild([
             d * t0,
             d * t1,
             d * t2,
@@ -137,7 +128,7 @@ const matrix3DBuild = (initial: number[]) => ({
                 (tmp22 * m32 + tmp14 * m02 + tmp19 * m12)),
             d * ((tmp22 * m22 + tmp16 * m02 + tmp21 * m12) -
                 (tmp20 * m12 + tmp23 * m22 + tmp17 * m02))
-        ]
+        ])
     }
 })
 
