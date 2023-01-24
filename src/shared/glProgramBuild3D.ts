@@ -58,24 +58,37 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
 
     const board: Board = {
-        cellSize: 10,
-        width: 10,
-        height: 10,
-        depth: 10,
+        cellSize: 100,
+        width: 3,
+        height: 3,
+        depth: 3,
         cells: []
     }
 
-    const totalHeight = board.height * board.cellSize
-    const totalWidth = board.width * board.cellSize
+    const verticesRaw: number[] = []
 
-    const vertices = new Float32Array([
-        totalWidth, 0, 0,
-        0, totalHeight, 0,
-        0, 0, 0,
-        totalWidth, 0, 0,
-        totalWidth, totalHeight, 0,
-        0, totalHeight, 0
-    ])
+    for (let vertexHeightIndex = 0; vertexHeightIndex < board.height; vertexHeightIndex++) {
+        for (let vertexWidthIndex = 0; vertexWidthIndex < board.width; vertexWidthIndex++) {
+            const squarePosition = [vertexWidthIndex * board.cellSize, 0, -vertexHeightIndex * board.cellSize]
+
+            const squareVertices = [
+                squarePosition[0], squarePosition[1], squarePosition[2],
+                squarePosition[0] + board.cellSize, squarePosition[1], squarePosition[2],
+                squarePosition[0] + board.cellSize, squarePosition[1], squarePosition[2] - board.cellSize,
+                squarePosition[0], squarePosition[1], squarePosition[2],
+                squarePosition[0] + board.cellSize, squarePosition[1], squarePosition[2] - board.cellSize,
+                squarePosition[0], squarePosition[1], squarePosition[2] - board.cellSize
+            ]
+
+            squareVertices.forEach((squareVertex) => {
+                verticesRaw.push(squareVertex)
+            })
+        }
+    }
+
+    console.log(verticesRaw.length)
+
+    const vertices = new Float32Array(verticesRaw)
 
     gl.bufferData(
         gl.ARRAY_BUFFER,
@@ -147,7 +160,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         })
 
         const cameraMatrixPosition = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
-            .translate(0, 100, 400)
+            .translate(100, 200, 400)
 
         const cameraPosition = [
             cameraMatrixPosition.value[12],
@@ -159,7 +172,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
         const cameraMatrix = matrix3DBuildLookAtMatrix(
             cameraPosition,
-            [0, 0, 0],
+            [(board.width * board.cellSize / 2), 0, -(board.height * board.cellSize / 2)],
             up
         )
 
@@ -175,7 +188,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         // Draw the geometry.
         const primitiveType = gl.TRIANGLES
         const offset = 0
-        const count = 6
+        const count = verticesRaw.length / 3
         gl.drawArrays(primitiveType, offset, count)
     }
 
