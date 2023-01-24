@@ -5,6 +5,7 @@ import colorsPerVertex from '@/assets/colorsPerVertex'
 import vertices from '@/assets/vertices'
 import matrix3DGetProjection from './matrix3DGetProjection'
 import resizeCanvasToDisplaySize from './resizeCanvasToDisplaySize'
+import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -52,6 +53,16 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     gl.enableVertexAttribArray(locations.attributes.verticesPosition)
 
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer)
+
+    const verticesMatrix = matrix3DBuild(matrix3DBuildRotationXMatrix(Math.PI))
+        .translate(-50, -75, -15)
+
+    for (let ii = 0; ii < vertices.length; ii += 3) {
+        const vector = verticesMatrix.applyToVec4([vertices[ii + 0], vertices[ii + 1], vertices[ii + 2], 1])
+        vertices[ii + 0] = vector[0]
+        vertices[ii + 1] = vector[1]
+        vertices[ii + 2] = vector[2]
+    }
 
     gl.bufferData(
         gl.ARRAY_BUFFER,

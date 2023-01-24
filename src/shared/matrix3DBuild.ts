@@ -1,3 +1,4 @@
+import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
 import matrix3DMultiply from './matrix3DMultiply'
 
 const matrix3DBuild = (initial: number[]) => ({
@@ -20,17 +21,7 @@ const matrix3DBuild = (initial: number[]) => ({
         ]
         return matrix3DBuild(matrix3DMultiply(initial, scaleMatrix))
     },
-    rotateX: (angleInRadians: number) => {
-        const c = Math.cos(angleInRadians)
-        const s = Math.sin(angleInRadians)
-        const rotationMatrix = [
-            1, 0, 0, 0,
-            0, c, s, 0,
-            0, -s, c, 0,
-            0, 0, 0, 1
-        ]
-        return matrix3DBuild(matrix3DMultiply(initial, rotationMatrix))
-    },
+    rotateX: (angleInRadians: number) => matrix3DBuild(matrix3DMultiply(initial, matrix3DBuildRotationXMatrix(angleInRadians))),
     rotateY: (angleInRadians: number) => {
         const c = Math.cos(angleInRadians)
         const s = Math.sin(angleInRadians)
@@ -53,7 +44,17 @@ const matrix3DBuild = (initial: number[]) => ({
         ]
         return matrix3DBuild(matrix3DMultiply(initial, rotationMatrix))
     },
-    multiply: (matrix: number[]) => matrix3DBuild(matrix3DMultiply(initial, matrix))
+    multiply: (matrix: number[]) => matrix3DBuild(matrix3DMultiply(initial, matrix)),
+    applyToVec4: (vector4: number[]) => {
+        const dst: number[] = []
+        for (let i = 0; i < 4; ++i) {
+            dst[i] = 0.0
+            for (let j = 0; j < 4; ++j) {
+                dst[i] += vector4[j] * initial[j * 4 + i]
+            }
+        }
+        return dst
+    }
 })
 
 export default matrix3DBuild
