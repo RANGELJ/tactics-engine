@@ -8,6 +8,7 @@ import resizeCanvasToDisplaySize from './resizeCanvasToDisplaySize'
 import matrix3DBuildRotationXMatrix from './matrix3DBuildRotationXMatrix'
 import matrix3DBuildRotationYMatrix from './matrix3DBuildRotationYMatrix'
 import matrix3DMultiply from './matrix3DMultiply'
+import matrix3DBuildLookAtMatrix from './matrix3DBuildLookAtMatrix'
 
 const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     const vertexShader = await shaderCreate({
@@ -135,8 +136,24 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             fieldOfViewInRadians
         })
 
-        const cameraMatrix = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
-            .translate(0, 0, radius * 1.5)
+        const firstFPosition = [radius, 0, 0]
+
+        const cameraMatrixPosition = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
+            .translate(0, 50, radius * 1.5)
+
+        const cameraPosition = [
+            cameraMatrixPosition.value[12],
+            cameraMatrixPosition.value[13],
+            cameraMatrixPosition.value[14]
+        ]
+
+        const up = [0, 1, 0]
+
+        const cameraMatrix = matrix3DBuildLookAtMatrix(
+            cameraPosition,
+            firstFPosition,
+            up
+        )
 
         const viewMatrix = cameraMatrix.inverse()
 
