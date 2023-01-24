@@ -136,10 +136,8 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
             fieldOfViewInRadians
         })
 
-        const firstFPosition = [radius, 0, 0]
-
         const cameraMatrixPosition = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
-            .translate(0, 50, 400)
+            .translate(0, 100, 400)
 
         const cameraPosition = [
             cameraMatrixPosition.value[12],
@@ -151,7 +149,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
 
         const cameraMatrix = matrix3DBuildLookAtMatrix(
             cameraPosition,
-            firstFPosition,
+            [0, 0, 0],
             up
         )
 
