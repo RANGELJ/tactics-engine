@@ -139,7 +139,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         const firstFPosition = [radius, 0, 0]
 
         const cameraMatrixPosition = matrix3DBuild(matrix3DBuildRotationYMatrix(cameraAngleRadians))
-            .translate(0, 50, radius * 1.5)
+            .translate(0, 50, 400)
 
         const cameraPosition = [
             cameraMatrixPosition.value[12],
