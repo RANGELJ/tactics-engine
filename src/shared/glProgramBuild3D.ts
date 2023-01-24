@@ -118,7 +118,7 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
     )
 
     let fieldOfViewInRadians = 0
-    const cameraAngleRadians = 0
+    let cameraAngleRadians = 0
     const numFs = 5
     const radius = 200
 
@@ -181,6 +181,9 @@ const glProgramBuildBase2DExample = async (gl: WebGL2RenderingContext) => {
         drawScene,
         setFieldOfViewInRadians: (value: number) => {
             fieldOfViewInRadians = value
+        },
+        setCameraAngleRadians: (value: number) => {
+            cameraAngleRadians = value
         }
     }
 }

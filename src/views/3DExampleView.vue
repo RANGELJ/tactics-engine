@@ -4,12 +4,19 @@
             <canvas id="mainCanvas" />
         </div>
         <div class="toolsPanel">
-            <span class="inputLabel">Field of view in radians</span>
+            <span class="inputLabel">Field of view</span>
             <input
                 type="range"
                 min="0"
                 max="300"
                 v-model="fieldOfViewValue"
+            />
+            <span class="inputLabel">Camera angle</span>
+            <input
+                type="range"
+                min="0"
+                max="360"
+                v-model="cameraAngleValue"
             />
         </div>
     </div>
@@ -23,12 +30,16 @@ import { onMounted, ref, watch } from 'vue'
 let gl: WebGL2RenderingContext | undefined
 let sceneProgram: SceneProgram | undefined
 
+const cameraAngleValue = ref(0)
 const fieldOfViewValue = ref(60)
 
 const updateScene = () => {
     if (!sceneProgram) {
         return
     }
+    sceneProgram.setCameraAngleRadians(
+        angleDegreesToRadians(cameraAngleValue.value)
+    )
     sceneProgram.setFieldOfViewInRadians(
         angleDegreesToRadians(fieldOfViewValue.value)
     )
@@ -36,6 +47,7 @@ const updateScene = () => {
 }
 
 watch([
+    cameraAngleValue,
     fieldOfViewValue
 ], () => {
     updateScene()
